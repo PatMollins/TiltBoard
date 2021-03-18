@@ -16,24 +16,25 @@ import android.view.View;
 import android.widget.TextView;
 
 
-public class MainActivity extends Activity {//implements SensorEventListener{
+public class MainActivity extends Activity {
 
     private TextView mTextView;
     private boolean typing = false;
     private SensorManager sensorManager;
     private Sensor aSensor;
-    private final int zFilter = 3;
-    private final int yFilter = 2;
-    private final int xFilter = 2;
+    private final float downFilter = -3f;
+    private final float upFilter = 2f;
+    private final float yFilter = 2f;
+    private final float xFilter = 2f;
     private final float dFilter = 1.5f;
     private float max = 0;
-    //private boolean waiting = true;
+    private boolean done = true;
     private char[] chars = new char[5];
     private int c = 0;
-    private Handler handler;
     private long t1 = 0;
+    private long touchT = 0;
     String message = "";
-    Boolean upper = false;
+    boolean upper = false;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -41,17 +42,21 @@ public class MainActivity extends Activity {//implements SensorEventListener{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mTextView = (TextView) findViewById(R.id.text);
+        //sets a touch listener for the text view
         mTextView.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                mTextView.setText("");
-                message = "";
-                //waiting = !waiting;
-                typing = false;
-                return true;
+            public boolean onTouch(View v, MotionEvent e) {
+                if (e.getEventTime() - touchT > 500) {
+                    touchT = e.getEventTime();
+                    del();
+                    text(message);
+                    done = false;
+                    typing = false;
+                }
+                    return true;
             }
         });
-
+        //initializes the sensor manager, accelerometer, and registers the accelerometer listener
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         aSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
         sensorManager.registerListener(aListener, aSensor, SensorManager.SENSOR_DELAY_NORMAL);
@@ -63,23 +68,27 @@ public class MainActivity extends Activity {//implements SensorEventListener{
     public SensorEventListener aListener = new SensorEventListener() {
         @Override
         public void onSensorChanged(final SensorEvent e) {
-            float[] values = e.values;
-            float x = values[0];
-            float y = values[1];
-            float z = values[2];
-            if(z>zFilter || y>dFilter || x>dFilter || z<-zFilter || y<-dFilter || x<-dFilter) {
-                if (e.timestamp - t1 > 200000000) {
-                    t1 = e.timestamp;
-                    //text(typing+"");
-                    //if(!waiting) {
-                    if (typing) {
-                        aType(values);
-                        //text(" aType");
-                    } else if (!typing) {
-                        aRead(values);
-                        //text(" aRead");
+            //if not done typing
+            if(!done) {
+                //assigns the event values to a float array
+                float[] values = e.values;
+                float x = values[0];
+                float y = values[1];
+                float z = values[2];
+                //checks if the event was large enough to trigger a filter
+                if (z > upFilter || y > dFilter || x > dFilter || z < downFilter || y < -dFilter || x < -dFilter) {
+                    //prevents events from occurring to rapidly
+                    if (e.timestamp - t1 > 250000000) {
+                        t1 = e.timestamp;
+                        //if the user is ready to type their character
+                        if (typing) {
+                            aType(values);
+                        }
+                        //if the user needs to chose their char set
+                        else if (!typing) {
+                            aRead(values);
+                        }
                     }
-                    //}
                 }
             }
         }
@@ -91,13 +100,13 @@ public class MainActivity extends Activity {//implements SensorEventListener{
     };
 
     public void aType(float[] values){
-
+        //assigns event values to xyz coordinates
         float x = values[0];
         float y = values[1];
         float z = values[2];
 
-        //down
-        if(z<-zFilter && (z<y && z<x)) {
+        //down,
+        if(z<downFilter && (z<y && z<x)) {
             message += chars[c]+"";
             c = 0;
             for(int i = 0; i<5; i++){
@@ -112,7 +121,7 @@ public class MainActivity extends Activity {//implements SensorEventListener{
             return;
         }
         //up
-        else if(z>zFilter && (z>y && z>x)){
+        else if(z>upFilter && (z>y && z>x)){
             typing = false;
             for(int i = 0; i<5; i++){
                 chars[i]=' ';
@@ -152,7 +161,7 @@ public class MainActivity extends Activity {//implements SensorEventListener{
             else
                 c=4;
         }
-        //mTextView.setText(""+ chars[c]);
+
         String s = message + "\n";
         s += chars[c] + "\n";
         for(int i = 0; i < 5; i++){
@@ -168,11 +177,11 @@ public class MainActivity extends Activity {//implements SensorEventListener{
         float z = values[2];
 
         //Up
-        if(z>zFilter && (z>y && z>x)){
+        if(z>upFilter && (z>y && z>x)){
             charProc(10);
         }
         //Down
-        else if(z<-zFilter && (z<y && z<x)){
+        else if(z<downFilter && (z<y && z<x)){
             charProc(5);
         }
         //Diagonal
@@ -209,7 +218,6 @@ public class MainActivity extends Activity {//implements SensorEventListener{
 
     public void charProc(int q){
         typing = true;
-        //TODO add cases for down and up input;
         switch(q){
             case 1:
                 chars[0] = 'a';
@@ -239,6 +247,15 @@ public class MainActivity extends Activity {//implements SensorEventListener{
                 chars[3] = 'o';
                 chars[4] = '4';
                 break;
+            /*case 5:
+                del();
+                typing = false;
+                chars[0] = ' ';
+                chars[1] = ' ';
+                chars[2] = ' ';
+                chars[3] = ' ';
+                chars[4] = ' ';
+                break;*/
             case 6:
                 chars[0] = 'p';
                 chars[1] = 'q';
@@ -267,6 +284,8 @@ public class MainActivity extends Activity {//implements SensorEventListener{
                 chars[3] = '8';
                 chars[4] = '9';
                 break;
+            case 10:
+                typing = false;
             default:
                 chars[0] = ' ';
                 chars[1] = ' ';
@@ -274,15 +293,23 @@ public class MainActivity extends Activity {//implements SensorEventListener{
                 chars[3] = ' ';
                 chars[4] = ' ';
         }
-        String s = message + "\n" + chars[0] + "\n";
-        for(int i = 0; i < 5; i++){
-           s += (chars[i] + " ");
+        if(q != 5) {
+            String s = message + "\n" + chars[0] + "\n";
+            for (int i = 0; i < 5; i++) {
+                s += (chars[i] + " ");
+            }
+            text(s);
         }
-        text(s);
-
-
     }
 
+    public void del(){
+        if(message != null && message.length() > 0){
+            message = message.substring(0,message.length()-1);
+        }
+        String str = message + "\n\n";
+        text(str);
+        typing = false;
+    }
 
 
 }

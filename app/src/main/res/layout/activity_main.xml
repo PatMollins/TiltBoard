@@ -13,7 +13,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="@dimen/inner_frame_layout_padding"
-        android:boxedEdges="all">
+        android:layout_centerHorizontal="true">
+
 
         <TextView
             android:id="@+id/text"
@@ -21,7 +22,9 @@
             android:layout_height="145dp"
             android:layout_gravity="center"
             android:clickable="true"
-            android:text="Touch to begin typing" />
+            android:gravity="center_horizontal"
+            android:text="Touch to begin typing"
+            android:textSize="18sp" />
 
     </FrameLayout>
 </androidx.wear.widget.BoxInsetLayout>
