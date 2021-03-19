@@ -22,7 +22,7 @@ public class MainActivity extends Activity {
     private boolean typing = false;
     private SensorManager sensorManager;
     private Sensor aSensor;
-    private final float downFilter = -3f;
+    private final float downFilter = -2f;
     private final float upFilter = 2f;
     private final float yFilter = 2f;
     private final float xFilter = 2f;
@@ -46,7 +46,7 @@ public class MainActivity extends Activity {
         mTextView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent e) {
-                if (e.getEventTime() - touchT > 500) {
+                if (e.getEventTime() - touchT > 250) {
                     touchT = e.getEventTime();
                     del();
                     text(message);
@@ -78,6 +78,7 @@ public class MainActivity extends Activity {
                 //checks if the event was large enough to trigger a filter
                 if (z > upFilter || y > dFilter || x > dFilter || z < downFilter || y < -dFilter || x < -dFilter) {
                     //prevents events from occurring to rapidly
+
                     if (e.timestamp - t1 > 250000000) {
                         t1 = e.timestamp;
                         //if the user is ready to type their character
@@ -275,7 +276,7 @@ public class MainActivity extends Activity {
                 chars[1] = '.';
                 chars[2] = '?';
                 chars[3] = '!';
-                chars[4] = '-';
+                chars[4] = '7';
                 break;
             case 9:
                 chars[0] = 'x';
@@ -293,13 +294,13 @@ public class MainActivity extends Activity {
                 chars[3] = ' ';
                 chars[4] = ' ';
         }
-        if(q != 5) {
-            String s = message + "\n" + chars[0] + "\n";
-            for (int i = 0; i < 5; i++) {
-                s += (chars[i] + " ");
-            }
-            text(s);
+
+        String s = message + "\n" + chars[0] + "\n";
+        for (int i = 0; i < 5; i++) {
+            s += (chars[i] + " ");
         }
+        text(s);
+
     }
 
     public void del(){
