@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
+import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -11,14 +12,19 @@ import android.hardware.SensorManager;
 import android.icu.util.TimeUnit;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.SpannableString;
+import android.text.SpannedString;
+import android.text.style.BackgroundColorSpan;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 
 
 public class MainActivity extends Activity {
-
     private TextView mTextView;
+    private TextView mTextView_menu;
+    private TextView mTextView_typing;
+    private TextView mTextView_characters;
     private boolean typing = false;
     private SensorManager sensorManager;
     private Sensor aSensor;
@@ -30,6 +36,7 @@ public class MainActivity extends Activity {
     private float max = 0;
     private boolean done = true;
     private char[] chars = new char[5];
+    private SpannableString hoveredChar;
     private int c = 0;
     private long t1 = 0;
     private long touchT = 0;
@@ -48,7 +55,8 @@ public class MainActivity extends Activity {
             public boolean onTouch(View v, MotionEvent e) {
                 if (e.getEventTime() - touchT > 250) {
                     touchT = e.getEventTime();
-                    del();
+                    setContentView(R.layout.keyboard_menu);
+                    mTextView_menu = (TextView) findViewById(R.id.userMessage_Menu);
                     text(message);
                     done = false;
                     typing = false;
@@ -63,7 +71,10 @@ public class MainActivity extends Activity {
 
     }
     public void text(String s){
-        mTextView.setText(s);
+       mTextView_menu.setText(s);
+    }
+    public void textTyping(String s){
+        mTextView_typing.setText(s);
     }
     public SensorEventListener aListener = new SensorEventListener() {
         @Override
@@ -83,10 +94,15 @@ public class MainActivity extends Activity {
                         t1 = e.timestamp;
                         //if the user is ready to type their character
                         if (typing) {
+                            setContentView(R.layout.key_menu);
+                            mTextView_typing= (TextView) findViewById(R.id.userMessage_typing);
+                            mTextView_characters = (TextView) findViewById(R.id.characters);
                             aType(values);
                         }
                         //if the user needs to chose their char set
                         else if (!typing) {
+                            setContentView(R.layout.keyboard_menu);
+                            mTextView_menu = (TextView) findViewById(R.id.userMessage_Menu);
                             aRead(values);
                         }
                     }
@@ -101,6 +117,10 @@ public class MainActivity extends Activity {
     };
 
     public void aType(float[] values){
+        textTyping(message);
+
+        this.setChars();
+
         //assigns event values to xyz coordinates
         float x = values[0];
         float y = values[1];
@@ -108,30 +128,28 @@ public class MainActivity extends Activity {
 
         //down,
         if(z<downFilter && (z<y && z<x)) {
-            message += chars[c]+"";
+            message += chars[c];
             c = 0;
             for(int i = 0; i<5; i++){
                 chars[i]=' ';
             }
             typing = false;
-            String str = message + "\n\n";
-            for(int i = 0; i < 5; i++){
-                str += (chars[i] + " ");
-            }
-            text(str);
+            setContentView(R.layout.keyboard_menu);
+            mTextView_menu = (TextView) findViewById(R.id.userMessage_Menu);
+            text(message);
             return;
         }
         //up
         else if(z>upFilter && (z>y && z>x)){
             typing = false;
+            message += chars[c];
+            c = 0;
             for(int i = 0; i<5; i++){
                 chars[i]=' ';
             }
-            String str = message + "\n\n";
-            for(int i = 0; i < 5; i++){
-                str += (chars[i] + " ");
-            }
-            text(str);
+            setContentView(R.layout.keyboard_menu);
+            mTextView_menu = (TextView) findViewById(R.id.userMessage_Menu);
+            text(message);
             return;
         }
         //forward
@@ -140,6 +158,7 @@ public class MainActivity extends Activity {
             for (int i = 0; i<5; i++){
                 chars[i] = Character.toUpperCase(chars[i]);
             }
+            this.setChars();
         }
         //backward
         else if(y<-yFilter && (y<z && y<x) && upper){
@@ -147,6 +166,7 @@ public class MainActivity extends Activity {
             for (int i = 0; i<5; i++){
                 chars[i] = Character.toLowerCase(chars[i]);
             }
+            this.setChars();
         }
         //right
         else if(x>xFilter && (x>z && x>y)){
@@ -162,16 +182,11 @@ public class MainActivity extends Activity {
             else
                 c=4;
         }
-
-        String s = message + "\n";
-        s += chars[c] + "\n";
-        for(int i = 0; i < 5; i++){
-            s += (chars[i] + " ");
-        }
-        text(s);
     }
 
     public void aRead(float[] values){
+        mTextView = (TextView) findViewById(R.id.userMessage_Menu);
+        text(message);
 
         float x = values[0];
         float y = values[1];
@@ -218,6 +233,9 @@ public class MainActivity extends Activity {
     }
 
     public void charProc(int q){
+        setContentView(R.layout.key_menu);
+        mTextView_typing= (TextView) findViewById(R.id.userMessage_typing);
+        mTextView_characters = (TextView) findViewById(R.id.characters);
         typing = true;
         switch(q){
             case 1:
@@ -295,21 +313,28 @@ public class MainActivity extends Activity {
                 chars[4] = ' ';
         }
 
-        String s = message + "\n" + chars[0] + "\n";
-        for (int i = 0; i < 5; i++) {
-            s += (chars[i] + " ");
-        }
-        text(s);
-
+        textTyping(message);
+        setChars();
     }
 
     public void del(){
         if(message != null && message.length() > 0){
             message = message.substring(0,message.length()-1);
         }
-        String str = message + "\n\n";
-        text(str);
+        text(message);
         typing = false;
+    }
+
+    public void setChars(){
+        String temp = "" + chars[0];
+        for(int i = 1; i < chars.length; i++){
+            temp += " " + chars[i];
+        }
+
+        hoveredChar = new SpannableString(temp);
+        hoveredChar.setSpan(new BackgroundColorSpan(Color.GREEN), c*2, (c*2)+1, 0);
+
+        mTextView_characters.setText(hoveredChar);
     }
 
 
