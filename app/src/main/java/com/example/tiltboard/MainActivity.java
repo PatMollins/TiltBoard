@@ -31,16 +31,12 @@ public class MainActivity extends Activity {
     private TextView mTextView_menu;
     private TextView mTextView_typing;
     private TextView mTextView_characters;
-    private ImageView mRelativeLayout;
     private boolean typing = false;
-    private SensorManager sensorManager;
-    private Sensor aSensor;
     private final float downFilter = -3f;
     private final float upFilter = 2f;
     private final float yFilter = 2f;
     private final float xFilter = 2f;
     private final float dFilter = 1.5f;
-    private float max = 0;
     private boolean done = true;
     private char[] chars = new char[5];
     private int c = 0;
@@ -67,8 +63,8 @@ public class MainActivity extends Activity {
         });
 
         //initializes the sensor manager, accelerometer, and registers the accelerometer listener
-        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        aSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
+        SensorManager sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        Sensor aSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
         sensorManager.registerListener(aListener, aSensor, SensorManager.SENSOR_DELAY_GAME);
 
     }
@@ -293,7 +289,7 @@ public class MainActivity extends Activity {
 
     public void returnToMain(){
         setContentView(R.layout.keyboard_menu);
-        mRelativeLayout = (ImageView) findViewById(R.id.arrows);
+        ImageView mRelativeLayout = (ImageView) findViewById(R.id.arrows);
         mRelativeLayout.setOnTouchListener(new View.OnTouchListener(){
             @Override
             public boolean onTouch(View v, MotionEvent e) {
@@ -319,12 +315,12 @@ public class MainActivity extends Activity {
     }
 
     public void setChars(){
-        String temp = "" + chars[0];
+        StringBuilder temp = new StringBuilder("" + chars[0]);
         for(int i = 1; i < chars.length; i++){
-            temp += " " + chars[i];
+            temp.append(" ").append(chars[i]);
         }
 
-        SpannableString hoveredChar = new SpannableString(temp);
+        SpannableString hoveredChar = new SpannableString(temp.toString());
         hoveredChar.setSpan(new BackgroundColorSpan(Color.GREEN), c*2, (c*2)+1, 0);
 
         mTextView_characters.setText(hoveredChar);

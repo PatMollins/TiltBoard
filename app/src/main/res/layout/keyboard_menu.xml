@@ -19,23 +19,23 @@
             android:clickable="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="25dp"
             android:gravity="center"
             android:textColor="@color/white"
-            android:textSize="15dp" />
+            android:textSize="15sp" />
 
         <ImageView
             android:id="@+id/arrows"
             android:layout_width="111dp"
             android:layout_height="48dp"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginLeft="23dp"
-            android:layout_marginRight="26dp"
+            android:layout_marginStart="23dp"
+            android:layout_marginEnd="23dp"
             android:layout_marginBottom="44dp"
             android:paddingBottom="15dp"
             android:src="@drawable/multi_directional_arrows"
@@ -45,12 +45,12 @@
             android:id="@+id/key1"
             android:layout_width="110dp"
             android:layout_height="25dp"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:layout_gravity="bottom|center_horizontal"
-            android:layout_marginLeft="-19dp"
-            android:layout_marginRight="75dp"
+            android:layout_marginStart="-19dp"
+            android:layout_marginEnd="75dp"
             android:layout_marginBottom="104dp"
             android:src="@drawable/curved_corners_rect" />
 
@@ -58,9 +58,9 @@
             android:id="@+id/text1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignLeft="@id/key1"
+            android:layout_alignStart="@id/key1"
             android:layout_alignTop="@id/key1"
-            android:layout_alignRight="@id/key1"
+            android:layout_alignEnd="@id/key1"
             android:layout_alignBottom="@id/key1"
             android:layout_centerHorizontal="true"
             android:layout_marginLeft="0dp"
@@ -70,18 +70,18 @@
             android:gravity="center"
             android:text="abc01"
             android:textColor="@color/black"
-            android:textSize="10dp" />
+            android:textSize="10sp" />
 
         <ImageView
             android:id="@+id/key2"
             android:layout_width="110dp"
             android:layout_height="25dp"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:layout_gravity="bottom|center_horizontal"
-            android:layout_marginLeft="29dp"
-            android:layout_marginRight="30dp"
+            android:layout_marginStart="29dp"
+            android:layout_marginEnd="30dp"
             android:layout_marginBottom="104dp"
             android:src="@drawable/curved_corners_rect" />
 
@@ -89,9 +89,9 @@
             android:id="@+id/text2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignLeft="@id/key2"
+            android:layout_alignStart="@id/key2"
             android:layout_alignTop="@id/key2"
-            android:layout_alignRight="@id/key2"
+            android:layout_alignEnd="@id/key2"
             android:layout_alignBottom="@id/key2"
             android:layout_centerHorizontal="true"
             android:layout_marginLeft="0dp"
@@ -101,18 +101,18 @@
             android:gravity="center"
             android:text="defg2"
             android:textColor="@color/black"
-            android:textSize="10dp" />
+            android:textSize="10sp" />
 
         <ImageView
             android:id="@+id/key3"
             android:layout_width="110dp"
             android:layout_height="25dp"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:layout_gravity="bottom|center_horizontal"
-            android:layout_marginLeft="74dp"
-            android:layout_marginRight="-19dp"
+            android:layout_marginStart="74dp"
+            android:layout_marginEnd="-19dp"
             android:layout_marginBottom="104dp"
             android:src="@drawable/curved_corners_rect" />
 
@@ -120,9 +120,9 @@
             android:id="@+id/text3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignLeft="@id/key3"
+            android:layout_alignStart="@id/key3"
             android:layout_alignTop="@id/key3"
-            android:layout_alignRight="@id/key3"
+            android:layout_alignEnd="@id/key3"
             android:layout_alignBottom="@id/key3"
             android:layout_centerHorizontal="true"
             android:layout_marginLeft="0dp"
@@ -132,18 +132,18 @@
             android:gravity="center"
             android:text="hijk3"
             android:textColor="@color/black"
-            android:textSize="10dp" />
+            android:textSize="10sp" />
 
         <ImageView
             android:id="@+id/key4"
             android:layout_width="110dp"
             android:layout_height="25dp"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:layout_gravity="bottom|center_horizontal"
-            android:layout_marginLeft="-19dp"
-            android:layout_marginRight="75dp"
+            android:layout_marginStart="-19dp"
+            android:layout_marginEnd="75dp"
             android:layout_marginBottom="64dp"
             android:src="@drawable/curved_corners_rect" />
 
@@ -151,9 +151,9 @@
             android:id="@+id/text4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignLeft="@id/key4"
+            android:layout_alignStart="@id/key4"
             android:layout_alignTop="@id/key4"
-            android:layout_alignRight="@id/key4"
+            android:layout_alignEnd="@id/key4"
             android:layout_alignBottom="@id/key4"
             android:layout_centerHorizontal="true"
             android:layout_marginLeft="0dp"
@@ -163,18 +163,18 @@
             android:gravity="center"
             android:text="lmno4"
             android:textColor="@color/black"
-            android:textSize="10dp" />
+            android:textSize="10sp" />
 
         <ImageView
             android:id="@+id/key5"
             android:layout_width="110dp"
             android:layout_height="25dp"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:layout_gravity="bottom|center_horizontal"
-            android:layout_marginLeft="74dp"
-            android:layout_marginRight="-19dp"
+            android:layout_marginStart="74dp"
+            android:layout_marginEnd="-19dp"
             android:layout_marginBottom="64dp"
             android:src="@drawable/curved_corners_rect" />
 
@@ -182,9 +182,9 @@
             android:id="@+id/text5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignLeft="@id/key5"
+            android:layout_alignStart="@id/key5"
             android:layout_alignTop="@id/key5"
-            android:layout_alignRight="@id/key5"
+            android:layout_alignEnd="@id/key5"
             android:layout_alignBottom="@id/key5"
             android:layout_centerHorizontal="true"
             android:layout_marginLeft="0dp"
@@ -194,18 +194,18 @@
             android:gravity="center"
             android:text="pqrs5"
             android:textColor="@color/black"
-            android:textSize="10dp" />
+            android:textSize="10sp" />
 
         <ImageView
             android:id="@+id/key6"
             android:layout_width="110dp"
             android:layout_height="25dp"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:layout_gravity="bottom|center_horizontal"
-            android:layout_marginLeft="-19dp"
-            android:layout_marginRight="75dp"
+            android:layout_marginStart="-19dp"
+            android:layout_marginEnd="75dp"
             android:layout_marginBottom="24dp"
             android:src="@drawable/curved_corners_rect" />
 
@@ -213,9 +213,9 @@
             android:id="@+id/text6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignLeft="@id/key6"
+            android:layout_alignStart="@id/key6"
             android:layout_alignTop="@id/key6"
-            android:layout_alignRight="@id/key6"
+            android:layout_alignEnd="@id/key6"
             android:layout_alignBottom="@id/key6"
             android:layout_centerHorizontal="true"
             android:layout_marginLeft="0dp"
@@ -225,18 +225,18 @@
             android:gravity="center"
             android:text="tuvw6"
             android:textColor="@color/black"
-            android:textSize="10dp" />
+            android:textSize="10sp" />
 
         <ImageView
             android:id="@+id/key7"
             android:layout_width="110dp"
             android:layout_height="25dp"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:layout_gravity="bottom|center_horizontal"
-            android:layout_marginLeft="29dp"
-            android:layout_marginRight="30dp"
+            android:layout_marginStart="29dp"
+            android:layout_marginEnd="30dp"
             android:layout_marginBottom="24dp"
             android:src="@drawable/curved_corners_rect" />
 
@@ -244,9 +244,9 @@
             android:id="@+id/text7"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignLeft="@id/key7"
+            android:layout_alignStart="@id/key7"
             android:layout_alignTop="@id/key7"
-            android:layout_alignRight="@id/key7"
+            android:layout_alignEnd="@id/key7"
             android:layout_alignBottom="@id/key7"
             android:layout_centerHorizontal="true"
             android:layout_marginLeft="0dp"
@@ -256,27 +256,27 @@
             android:gravity="center"
             android:text=".?!7"
             android:textColor="@color/black"
-            android:textSize="10dp" />
+            android:textSize="10sp" />
 
         <ImageView
             android:id="@+id/key8"
             android:layout_width="110dp"
             android:layout_height="25dp"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:layout_gravity="bottom|center_horizontal"
-            android:layout_marginLeft="74dp"
-            android:layout_marginRight="-19dp"
+            android:layout_marginStart="74dp"
+            android:layout_marginEnd="-19dp"
             android:layout_marginBottom="24dp"
             android:src="@drawable/curved_corners_rect" />
         <TextView
             android:id="@+id/text8"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignLeft="@id/key8"
+            android:layout_alignStart="@id/key8"
             android:layout_alignTop="@id/key8"
-            android:layout_alignRight="@id/key8"
+            android:layout_alignEnd="@id/key8"
             android:layout_alignBottom="@id/key8"
             android:layout_centerHorizontal="true"
             android:layout_marginLeft="0dp"
@@ -286,7 +286,7 @@
             android:gravity="center"
             android:text="xyz89"
             android:textColor="@color/black"
-            android:textSize="10dp" />
+            android:textSize="10sp" />
 
     </RelativeLayout>
 </androidx.wear.widget.BoxInsetLayout>
