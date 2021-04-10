@@ -10,6 +10,8 @@
     tools:deviceIds="wear">
 
     <FrameLayout
+        android:id="@+id/frame"
+        android:clickable="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="@dimen/inner_frame_layout_padding"

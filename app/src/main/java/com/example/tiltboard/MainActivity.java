@@ -15,9 +15,15 @@ import android.os.Handler;
 import android.text.SpannableString;
 import android.text.SpannedString;
 import android.text.style.BackgroundColorSpan;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import static com.google.android.gms.wearable.DataMap.TAG;
 
 
 public class MainActivity extends Activity {
@@ -25,10 +31,11 @@ public class MainActivity extends Activity {
     private TextView mTextView_menu;
     private TextView mTextView_typing;
     private TextView mTextView_characters;
+    private ImageView mRelativeLayout;
     private boolean typing = false;
     private SensorManager sensorManager;
     private Sensor aSensor;
-    private final float downFilter = -2f;
+    private final float downFilter = -3f;
     private final float upFilter = 2f;
     private final float yFilter = 2f;
     private final float xFilter = 2f;
@@ -36,7 +43,6 @@ public class MainActivity extends Activity {
     private float max = 0;
     private boolean done = true;
     private char[] chars = new char[5];
-    private SpannableString hoveredChar;
     private int c = 0;
     private long t1 = 0;
     private long touchT = 0;
@@ -49,25 +55,21 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mTextView = (TextView) findViewById(R.id.text);
+        typing = false;
         //sets a touch listener for the text view
         mTextView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent e) {
-                if (e.getEventTime() - touchT > 250) {
-                    touchT = e.getEventTime();
-                    setContentView(R.layout.keyboard_menu);
-                    mTextView_menu = (TextView) findViewById(R.id.userMessage_Menu);
-                    text(message);
+                    returnToMain();
                     done = false;
-                    typing = false;
-                }
                     return true;
             }
         });
+
         //initializes the sensor manager, accelerometer, and registers the accelerometer listener
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         aSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
-        sensorManager.registerListener(aListener, aSensor, SensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener(aListener, aSensor, SensorManager.SENSOR_DELAY_GAME);
 
     }
     public void text(String s){
@@ -90,8 +92,9 @@ public class MainActivity extends Activity {
                 if (z > upFilter || y > dFilter || x > dFilter || z < downFilter || y < -dFilter || x < -dFilter) {
                     //prevents events from occurring to rapidly
 
-                    if (e.timestamp - t1 > 250000000) {
+                    if ((e.timestamp - t1) > 500000000L) {
                         t1 = e.timestamp;
+
                         //if the user is ready to type their character
                         if (typing) {
                             setContentView(R.layout.key_menu);
@@ -101,8 +104,7 @@ public class MainActivity extends Activity {
                         }
                         //if the user needs to chose their char set
                         else if (!typing) {
-                            setContentView(R.layout.keyboard_menu);
-                            mTextView_menu = (TextView) findViewById(R.id.userMessage_Menu);
+                            //returnToMain();
                             aRead(values);
                         }
                     }
@@ -111,54 +113,47 @@ public class MainActivity extends Activity {
         }
 
         @Override
-        public void onAccuracyChanged(Sensor sensor, int i) {
-
-        }
+        public void onAccuracyChanged(Sensor sensor, int i) {}
     };
 
+
+    //User chooses specific character
     public void aType(float[] values){
         textTyping(message);
 
-        this.setChars();
+        setChars();
 
         //assigns event values to xyz coordinates
         float x = values[0];
         float y = values[1];
         float z = values[2];
 
-        //down,
-        if(z<downFilter && (z<y && z<x)) {
-            message += chars[c];
-            c = 0;
-            for(int i = 0; i<5; i++){
-                chars[i]=' ';
-            }
-            typing = false;
-            setContentView(R.layout.keyboard_menu);
-            mTextView_menu = (TextView) findViewById(R.id.userMessage_Menu);
-            text(message);
-            return;
-        }
         //up
-        else if(z>upFilter && (z>y && z>x)){
+        if(z>upFilter && (z>y && z>x)){
             typing = false;
+            c = 0;
+            for(int i = 0; i<5; i++){
+                chars[i]=' ';
+            }
+            returnToMain();
+        }
+        //down,
+        else if(z<downFilter && (z<y && z<x)) {
             message += chars[c];
             c = 0;
             for(int i = 0; i<5; i++){
                 chars[i]=' ';
             }
-            setContentView(R.layout.keyboard_menu);
-            mTextView_menu = (TextView) findViewById(R.id.userMessage_Menu);
-            text(message);
-            return;
+            typing = false;
+            returnToMain();
         }
         //forward
-        else if(y>yFilter && (y>z && y>x)){
+        else if(y>yFilter && (y>z && y>x) && !upper){
             upper = true;
             for (int i = 0; i<5; i++){
                 chars[i] = Character.toUpperCase(chars[i]);
             }
-            this.setChars();
+            setChars();
         }
         //backward
         else if(y<-yFilter && (y<z && y<x) && upper){
@@ -166,7 +161,7 @@ public class MainActivity extends Activity {
             for (int i = 0; i<5; i++){
                 chars[i] = Character.toLowerCase(chars[i]);
             }
-            this.setChars();
+            setChars();
         }
         //right
         else if(x>xFilter && (x>z && x>y)){
@@ -174,6 +169,7 @@ public class MainActivity extends Activity {
                 c++;
             else
                 c=0;
+            setChars();
         }
         //left
         else if(x<-xFilter && (x<z && x<y)){
@@ -181,6 +177,7 @@ public class MainActivity extends Activity {
                 c--;
             else
                 c=4;
+            setChars();
         }
     }
 
@@ -192,16 +189,10 @@ public class MainActivity extends Activity {
         float y = values[1];
         float z = values[2];
 
-        //Up
-        if(z>upFilter && (z>y && z>x)){
-            charProc(10);
-        }
-        //Down
-        else if(z<downFilter && (z<y && z<x)){
-            charProc(5);
-        }
+
+
         //Diagonal
-        else if(x>dFilter && y<-dFilter){
+        if(x>dFilter && y<-dFilter){
             charProc(9);
         }
         else if(x<-dFilter && y<-dFilter){
@@ -266,15 +257,6 @@ public class MainActivity extends Activity {
                 chars[3] = 'o';
                 chars[4] = '4';
                 break;
-            /*case 5:
-                del();
-                typing = false;
-                chars[0] = ' ';
-                chars[1] = ' ';
-                chars[2] = ' ';
-                chars[3] = ' ';
-                chars[4] = ' ';
-                break;*/
             case 6:
                 chars[0] = 'p';
                 chars[1] = 'q';
@@ -303,18 +285,29 @@ public class MainActivity extends Activity {
                 chars[3] = '8';
                 chars[4] = '9';
                 break;
-            case 10:
-                typing = false;
-            default:
-                chars[0] = ' ';
-                chars[1] = ' ';
-                chars[2] = ' ';
-                chars[3] = ' ';
-                chars[4] = ' ';
         }
 
         textTyping(message);
         setChars();
+    }
+
+    public void returnToMain(){
+        setContentView(R.layout.keyboard_menu);
+        mRelativeLayout = (ImageView) findViewById(R.id.arrows);
+        mRelativeLayout.setOnTouchListener(new View.OnTouchListener(){
+            @Override
+            public boolean onTouch(View v, MotionEvent e) {
+                if (e.getEventTime() - touchT > 250) {
+                    touchT = e.getEventTime();
+                    del();
+                    done = false;
+                    typing = false;
+                }
+                return true;
+            }
+        });
+        mTextView_menu = (TextView) findViewById(R.id.userMessage_Menu);
+        text(message);
     }
 
     public void del(){
@@ -331,7 +324,7 @@ public class MainActivity extends Activity {
             temp += " " + chars[i];
         }
 
-        hoveredChar = new SpannableString(temp);
+        SpannableString hoveredChar = new SpannableString(temp);
         hoveredChar.setSpan(new BackgroundColorSpan(Color.GREEN), c*2, (c*2)+1, 0);
 
         mTextView_characters.setText(hoveredChar);
